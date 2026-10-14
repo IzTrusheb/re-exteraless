@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="InlineMusicSearchEnterQuery">Введите название трека для поиска</string>
+    <string name="InlineMusicSearchLoading">Поиск музыки…</string>
+    <string name="InlineMusicSearchNoResults">Треки не найдены</string>
+    <string name="InlineMusicSearchFailed">Не удалось загрузить музыку. Проверьте подключение и попробуйте ещё раз.</string>
+</resources>

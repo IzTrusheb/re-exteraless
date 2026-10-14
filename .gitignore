@@ -1,0 +1,29 @@
+.gradle
+.idea
+.kotlin
+.vscode
+*.aar
+!TMessagesProj/libs/glyph-matrix-sdk-2.0.aar
+*.so
+*.iml
+**/.DS_Store
+build/
+obj/
+local.properties
+TMessagesProj/.cxx/
+TMessagesProj/jniLibs/
+TMessagesProj/jniRes/
+TMessagesProj/afat/
+TMessagesProj/jni/ffmpeg/build_android
+# Python-артефакты
+__pycache__/
+*.pyc
+
+# JVM crash dumps
+hs_err_pid*.log
+replay_pid*.log
+
+# Ключ подписи
+TMessagesProj/release.keystore
+TMessagesProj/release/
+tests/local/
