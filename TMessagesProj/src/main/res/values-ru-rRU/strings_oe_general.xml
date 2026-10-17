@@ -2,6 +2,12 @@
 <resources>
     <string name="OEGeneralTitle">Основные</string>
     <string name="OEGeneralOtherTitle">Прочее</string>
+    <string name="OEGeneralMusicSearchHeader">Поиск музыки</string>
+    <string name="OEGeneralMusicSearch">Поиск музыки в чатах и поиске</string>
+    <string name="OEGeneralMusicSearchAlias">Свой алиас</string>
+    <string name="OEGeneralMusicSearchAliasNone">Не задан</string>
+    <string name="OEGeneralMusicSearchAliasHint">Например, #music: буквы, цифры или подчёркивание, до 32 символов.</string>
+    <string name="OEGeneralMusicSearchAliasInvalid">Укажите один хештег длиной до 32 букв, цифр или подчёркиваний.</string>
 
     <!-- Translate Messages -->
     <string name="OEGeneralTranslateHeader">Перевод сообщений</string>
@@ -67,7 +73,7 @@
     <string name="OEGeneralImportEtgDone">Импортировано настроек: %1$d</string>
     <string name="OEGeneralResetSettings">Сброс настроек</string>
     <string name="OEGeneralResetSettingsInfo">Все настройки вернутся к значениям по умолчанию, приложение перезапустится.</string>
-    <string name="OEGeneralResetSettingsDone">Настройки exteraless сброшены.</string>
+    <string name="OEGeneralResetSettingsDone">Настройки re:exteraless сброшены.</string>
     <string name="OEGeneralDeleteAccount">Удалить аккаунт</string>
     <string name="DeepLFormalityDefault">Тон: как есть</string>
     <string name="DeepLFormalityInformal">Тон: неформальный</string>
@@ -126,7 +132,7 @@
     <string name="CloudConfigIncludeApiKeysDesc">Ключи API сервисов ИИ и перевода тоже попадут в облако.</string>
     <string name="OECloudTitle">Облако</string>
     <string name="OECloudHeroTitle">Настройки в облаке</string>
-    <string name="OECloudHeroText">Храните настройки exteraless в Telegram и восстанавливайте их на любом устройстве с этим аккаунтом.</string>
+    <string name="OECloudHeroText">Храните настройки re:exteraless в Telegram и восстанавливайте их на любом устройстве с этим аккаунтом.</string>
     <string name="OECloudStatus">Состояние</string>
     <string name="OECloudLocal">Это устройство</string>
     <string name="OECloudRemote">Облако</string>

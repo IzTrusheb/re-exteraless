@@ -1,5 +1,6 @@
 package app.exteraless.settings;
 
+import static org.telegram.messenger.AndroidUtilities.dp;
 import static org.telegram.messenger.LocaleController.getString;
 
 import android.app.Activity;
@@ -8,7 +9,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.CountDownTimer;
+import android.text.InputType;
+import android.util.TypedValue;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +34,8 @@ import org.telegram.ui.Cells.TextCell;
 import org.telegram.ui.Cells.TextCheckCell;
 import org.telegram.ui.Cells.TextInfoPrivacyCell;
 import org.telegram.ui.Components.BulletinFactory;
+import org.telegram.ui.Components.EditTextBoldCursor;
+import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.LaunchActivity;
 
 import java.io.File;
@@ -42,6 +48,7 @@ import java.util.UUID;
 import app.exteraless.backup.EtgBackup;
 import app.exteraless.backup.EtgBackupUi;
 import app.exteraless.general.GeneralConfig;
+import app.exteraless.player.MusicSearchUtils;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import app.exteraless.general.GeneralHelper;
@@ -74,6 +81,10 @@ public class OpenExteraOtherActivity extends BaseNekoSettingsActivity {
     private int nagramSettingsRow;
     private int ayuMomentsRow;
     private int nagramDividerRow;
+    private int musicSearchHeaderRow;
+    private int musicSearchRow;
+    private int musicSearchAliasRow;
+    private int musicSearchDividerRow;
 
     private int experimentalHeaderRow;
     private int localPremiumRow;
@@ -137,6 +148,11 @@ public class OpenExteraOtherActivity extends BaseNekoSettingsActivity {
         nagramSettingsRow = -1;
         ayuMomentsRow = addRow("ayuMoments");
         nagramDividerRow = addRow();
+
+        musicSearchHeaderRow = addRow("musicSearchHeader");
+        musicSearchRow = addRow("musicSearch");
+        musicSearchAliasRow = addRow("musicSearchAlias");
+        musicSearchDividerRow = addRow();
 
         experimentalHeaderRow = addRow("experimentalHeader");
         localPremiumRow = addRow("localPremium");
@@ -213,6 +229,14 @@ public class OpenExteraOtherActivity extends BaseNekoSettingsActivity {
             if (getParentLayout() != null) {
                 getParentLayout().rebuildAllFragmentViews(false, false);
             }
+        } else if (position == musicSearchRow) {
+            boolean enabled = !MusicSearchUtils.isMusicSearchEnabled();
+            MusicSearchUtils.setMusicSearchEnabled(enabled);
+            if (view instanceof TextCheckCell) {
+                ((TextCheckCell) view).setChecked(enabled);
+            }
+        } else if (position == musicSearchAliasRow) {
+            showMusicSearchAliasDialog();
         } else if (position == ayuMomentsRow) {
             presentFragment(new OpenExteraAyuMomentsActivity());
         } else if (position == localPremiumRow) {
@@ -292,6 +316,67 @@ public class OpenExteraOtherActivity extends BaseNekoSettingsActivity {
         if (view instanceof TextCheckCell) {
             ((TextCheckCell) view).setChecked(sensitiveEnabled);
         }
+    }
+
+    private void showMusicSearchAliasDialog() {
+        Context context = getParentActivity();
+        if (context == null) {
+            return;
+        }
+
+        EditTextBoldCursor editText = new EditTextBoldCursor(context);
+        editText.lineYFix = true;
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        editText.setText(MusicSearchUtils.getMusicSearchAlias());
+        editText.setTextColor(getThemedColor(Theme.key_dialogTextBlack));
+        editText.setHintColor(getThemedColor(Theme.key_groupcreate_hintText));
+        editText.setHintText(getString(R.string.OEGeneralMusicSearchAliasHint));
+        editText.setFocusable(true);
+        editText.setSingleLine(true);
+        editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        editText.setBackground(null);
+        editText.setLineColors(getThemedColor(Theme.key_windowBackgroundWhiteInputField),
+                getThemedColor(Theme.key_windowBackgroundWhiteInputFieldActivated),
+                getThemedColor(Theme.key_text_RedRegular));
+        editText.setCursorColor(getThemedColor(Theme.key_windowBackgroundWhiteInputFieldActivated));
+        editText.setPadding(0, dp(6), 0, dp(6));
+
+        LinearLayout container = new LinearLayout(context);
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.addView(editText, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT,
+                LayoutHelper.WRAP_CONTENT, 24f, 0f, 24f, 10f));
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, getResourceProvider());
+        builder.setTitle(getString(R.string.OEGeneralMusicSearchAlias));
+        builder.makeCustomMaxHeight();
+        builder.setView(container);
+        builder.setWidth(dp(292));
+        builder.setPositiveButton(getString(R.string.Done), (dialog, which) -> {
+            String value = editText.getText() == null ? "" : editText.getText().toString();
+            String alias = MusicSearchUtils.normalizeMusicSearchAlias(value);
+            if (alias == null) {
+                AndroidUtilities.shakeView(editText);
+                BulletinFactory.of(OpenExteraOtherActivity.this)
+                        .createErrorBulletin(getString(R.string.OEGeneralMusicSearchAliasInvalid))
+                        .show();
+                return;
+            }
+            MusicSearchUtils.setMusicSearchAlias(alias);
+            if (listAdapter != null) {
+                listAdapter.notifyItemChanged(musicSearchAliasRow);
+            }
+            dialog.dismiss();
+        });
+        builder.setNegativeButton(getString(R.string.Cancel), (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(d -> {
+            editText.requestFocus();
+            editText.setSelection(editText.length());
+            AndroidUtilities.showKeyboard(editText);
+        });
+        dialog.setDismissDialogByButtons(false);
+        showDialog(dialog, d -> AndroidUtilities.hideKeyboard(editText));
     }
 
     private void exportEtgSettings() {
@@ -509,6 +594,8 @@ public class OpenExteraOtherActivity extends BaseNekoSettingsActivity {
                         cell.setText(getString(R.string.Experimental));
                     } else if (position == googleHeaderRow) {
                         cell.setText(getString(R.string.OEGeneralGoogleHeader));
+                    } else if (position == musicSearchHeaderRow) {
+                        cell.setText(getString(R.string.OEGeneralMusicSearchHeader));
                     }
                     break;
                 }
@@ -530,7 +617,10 @@ public class OpenExteraOtherActivity extends BaseNekoSettingsActivity {
                         cell.setIcon(R.drawable.msg_settings);
                     } else {
                         cell.setIcon(0);
-                        if (position == localPremiumRow) {
+                        if (position == musicSearchRow) {
+                            cell.setTextAndCheck(getString(R.string.OEGeneralMusicSearch),
+                                    MusicSearchUtils.isMusicSearchEnabled(), true);
+                        } else if (position == localPremiumRow) {
                             cell.setTextAndValueAndCheck(getString(R.string.localPremium),
                                     getString(R.string.OELocalPremiumInfo), NekoConfig.localPremium.Bool(), true, true);
                         } else if (position == unlimitedPinnedDialogsRow) {
@@ -556,6 +646,11 @@ public class OpenExteraOtherActivity extends BaseNekoSettingsActivity {
                     if (position == ayuMomentsRow) {
                         cell.setColors(Theme.key_windowBackgroundWhiteGrayIcon, Theme.key_windowBackgroundWhiteBlackText);
                         cell.setTextAndIcon(getString(R.string.OEGeneralAyuMoments), R.drawable.ayu_ghost, false);
+                    } else if (position == musicSearchAliasRow) {
+                        cell.setColors(Theme.key_windowBackgroundWhiteGrayIcon, Theme.key_windowBackgroundWhiteBlackText);
+                        String alias = MusicSearchUtils.getMusicSearchAlias();
+                        cell.setTextAndValue(getString(R.string.OEGeneralMusicSearchAlias),
+                                alias.isEmpty() ? getString(R.string.OEGeneralMusicSearchAliasNone) : alias, false);
                     } else if (position == exportEtgRow) {
                         cell.setColors(Theme.key_windowBackgroundWhiteGrayIcon, Theme.key_windowBackgroundWhiteBlackText);
                         cell.setTextAndIcon(getString(R.string.OEGeneralExportEtgSettings), R.drawable.msg_shareout, true);
@@ -595,17 +690,17 @@ public class OpenExteraOtherActivity extends BaseNekoSettingsActivity {
         @Override
         public int getItemViewType(int position) {
             if (position == nagramHeaderRow || position == googleHeaderRow
-                    || position == experimentalHeaderRow || position == backupHeaderRow) {
+                    || position == musicSearchHeaderRow || position == experimentalHeaderRow || position == backupHeaderRow) {
                 return TYPE_HEADER;
             } else if (position == nagramDividerRow || position == experimentalDividerRow
-                    || position == etgDividerRow) {
+                    || position == musicSearchDividerRow || position == etgDividerRow) {
                 return TYPE_SHADOW;
             } else if (position == googleDividerRow || position == glyphDividerRow
                     || position == bottomDividerRow) {
                 return TYPE_INFO_PRIVACY;
             } else if (position == exportEtgRow || position == importEtgRow
                     || position == resetSettingsRow || position == deleteAccountRow
-                    || position == glyphRow || position == ayuMomentsRow) {
+                    || position == glyphRow || position == ayuMomentsRow || position == musicSearchAliasRow) {
                 return TYPE_TEXT;
             }
             return TYPE_CHECK;

@@ -25,12 +25,12 @@ public class ControlsRow extends ViewGroup implements MorphButton.PressListener 
 
     public ControlsRow(Context context) {
         super(context);
-        shuffle = new MorphButton(context, PlayerIcon.stroke(PlayerIcon.SHUFFLE, 22));
+        shuffle = new MorphButton(context, PlayerIcon.fill(PlayerIcon.SHUFFLE, 22));
         prev = new MorphButton(context, PlayerIcon.fill(PlayerIcon.PREV, 28));
         play = new MorphButton(context, PlayerIcon.fill(PlayerIcon.PLAY, 36));
         play.setAltIcon(PlayerIcon.fill(PlayerIcon.PAUSE, 36));
         next = new MorphButton(context, PlayerIcon.fill(PlayerIcon.NEXT, 28));
-        repeat = new MorphButton(context, PlayerIcon.stroke(PlayerIcon.REPEAT, 22));
+        repeat = new MorphButton(context, PlayerIcon.fill(PlayerIcon.REPEAT, 22));
         buttons = new MorphButton[]{shuffle, prev, play, next, repeat};
         float[] widths = {48, 64, 88, 64, 48};
         float[] heights = {48, 64, 88, 64, 48};
@@ -41,11 +41,7 @@ public class ControlsRow extends ViewGroup implements MorphButton.PressListener 
             b.setPressListener(this);
             addView(b);
         }
-        shuffle.setRadius(dp(24), false);
-        repeat.setRadius(dp(24), false);
-        prev.setRadius(dp(32), false);
-        next.setRadius(dp(32), false);
-        play.setRadius(dp(44), false);
+        updateTargets(false);
     }
 
     @Override
@@ -57,6 +53,12 @@ public class ControlsRow extends ViewGroup implements MorphButton.PressListener 
         playing = value;
         play.setAlt(value, animated);
         updateTargets(animated);
+    }
+
+    public void setM3Shape(int shape) {
+        for (MorphButton button : buttons) {
+            button.setShape(shape);
+        }
     }
 
     public void setModes(boolean shuffleActive, boolean repeatActive, boolean repeatOne, boolean animated) {

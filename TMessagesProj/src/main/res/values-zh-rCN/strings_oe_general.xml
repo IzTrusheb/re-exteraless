@@ -2,6 +2,12 @@
 <resources>
     <string name="OEGeneralTitle">通用</string>
     <string name="OEGeneralOtherTitle">其他</string>
+    <string name="OEGeneralMusicSearchHeader">音乐搜索</string>
+    <string name="OEGeneralMusicSearch">在聊天和搜索中查找音乐</string>
+    <string name="OEGeneralMusicSearchAlias">自定义别名</string>
+    <string name="OEGeneralMusicSearchAliasNone">未设置</string>
+    <string name="OEGeneralMusicSearchAliasHint">输入标签，例如 #music（最多 32 个字母、数字或下划线）。</string>
+    <string name="OEGeneralMusicSearchAliasInvalid">请输入一个不超过 32 个字母、数字或下划线的标签。</string>
     <string name="OEGeneralTranslateHeader">翻译消息</string>
     <string name="OEGeneralTranslateButton">翻译按钮</string>
     <string name="OEGeneralTranslateWholeChat">翻译整个对话</string>
@@ -52,7 +58,7 @@
     <string name="OEGeneralImportEtgDone">已导入设置：%1$d 项</string>
     <string name="OEGeneralResetSettings">重置设置</string>
     <string name="OEGeneralResetSettingsInfo">所有设置都将恢复为默认值，应用将重新启动。</string>
-    <string name="OEGeneralResetSettingsDone">exteraless 设置已重置。</string>
+    <string name="OEGeneralResetSettingsDone">re:exteraless 设置已重置。</string>
     <string name="OEGeneralDeleteAccount">删除账号</string>
     <string name="DeepLFormalityDefault">语气：随原文</string>
     <string name="DeepLFormalityInformal">语气：非正式</string>

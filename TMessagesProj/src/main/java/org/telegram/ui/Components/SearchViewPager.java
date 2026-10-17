@@ -74,6 +74,7 @@ import org.telegram.ui.PremiumPreviewFragment;
 import org.telegram.ui.ReportBottomSheet;
 import org.telegram.ui.SearchAdsInfoBottomSheet;
 
+import app.exteraless.player.MusicSearchUtils;
 import app.exteraless.player.PlayerSheet;
 import app.exteraless.player.PlayerActions;
 
@@ -692,18 +693,10 @@ public class SearchViewPager extends ViewPagerFixed implements FilteredSearchVie
 
     @Nullable
     private String getMusicSearchQuery(String text) {
-        if (TextUtils.isEmpty(text)) {
+        if (!MusicSearchUtils.isMusicSearchEnabled()) {
             return null;
         }
-        String trimmed = text.trim();
-        final String prefix = "#мч";
-        if (trimmed.length() < prefix.length() || !trimmed.regionMatches(true, 0, prefix, 0, prefix.length())) {
-            return null;
-        }
-        if (trimmed.length() > prefix.length() && !Character.isWhitespace(trimmed.charAt(prefix.length()))) {
-            return null;
-        }
-        return trimmed.substring(prefix.length()).trim();
+        return MusicSearchUtils.getMusicSearchQuery(text);
     }
 
     private void playInlineMusicResults(ArrayList<TLRPC.BotInlineResult> results, int selectedPosition) {

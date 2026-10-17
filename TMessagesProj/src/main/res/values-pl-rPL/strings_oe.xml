@@ -18,7 +18,7 @@
     <string name="QrWifiPasswordCopied">Skopiowano hasło</string>
     <string name="QrWifiUnknownNetwork">W kodzie brakuje nazwy sieci</string>
     <string name="QrLoginHint">Ten kod loguje do konta. Skorzystaj z Ustawienia → Urządzenia → Podłącz komputer — tamten ekran weryfikuje kod i chroni Twoje konto.</string>
-    <string name="OpenExteraPreferences">Ustawienia exteraless</string>
+    <string name="OpenExteraPreferences">Ustawienia re:exteraless</string>
     <string name="OpenExteraDesignSection">Projekt graficzny</string>
     <string name="OpenExteraDesigner">Ikony i projekt graficzny</string>
     <string name="OpenExteraDesignStudio">Studio projektowe</string>
@@ -43,7 +43,10 @@
     <string name="OEProfilerStarted">Profiler działa. Korzystaj z aplikacji jak zwykle, a potem zatrzymaj go tutaj.</string>
     <string name="OEProfilerShareLast">Udostępnij ostatni raport profilera</string>
     <string name="OEProfileIdDate">Data rejestracji i dołączenia</string>
-    <string name="OEProfileAccountCreated">Konto **%1$s** utworzono %2$s</string>
+    <string name="OEProfileAccountCreated">Szacowana data rejestracji konta **%1$s**: %2$s</string>
+    <string name="OEProfileRegistrationEstimate">%1$s ± %2$d dni</string>
+    <string name="OEProfileRegistrationMonth">%1$s</string>
+    <string name="OEProfileRegistrationUnknown">Brak szacunku dla tego ID.</string>
     <string name="OEProfileJoinedChat">Dołączono do **%1$s** %2$s</string>
     <string name="OEProfileJoinedChannel">Zasubskrybowano **%1$s** %2$s</string>
     <string name="OEProfileChatCreated">**%1$s** utworzono %2$s</string>

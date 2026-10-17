@@ -2,6 +2,12 @@
 <resources>
     <string name="OEGeneralTitle">General</string>
     <string name="OEGeneralOtherTitle">Other</string>
+    <string name="OEGeneralMusicSearchHeader">Music search</string>
+    <string name="OEGeneralMusicSearch">Music search in chats and search</string>
+    <string name="OEGeneralMusicSearchAlias">Custom alias</string>
+    <string name="OEGeneralMusicSearchAliasNone">Not set</string>
+    <string name="OEGeneralMusicSearchAliasHint">Enter a hashtag, e.g. #music (letters, numbers, underscores; up to 32 characters).</string>
+    <string name="OEGeneralMusicSearchAliasInvalid">Use one hashtag with up to 32 letters, numbers, or underscores.</string>
 
     <!-- Translate Messages -->
     <string name="OEGeneralTranslateHeader">Translate Messages</string>
@@ -71,7 +77,7 @@
     <string name="OEGeneralImportEtgDone">Settings imported: %1$d</string>
     <string name="OEGeneralResetSettings">Reset Settings</string>
     <string name="OEGeneralResetSettingsInfo">All settings will be reset to their default values, and the app will restart.</string>
-    <string name="OEGeneralResetSettingsDone">exteraless preferences have been reset.</string>
+    <string name="OEGeneralResetSettingsDone">re:exteraless preferences have been reset.</string>
     <string name="OEGeneralDeleteAccount">Delete Account</string>
     <string name="DeepLFormalityDefault">Tone: as it comes</string>
     <string name="DeepLFormalityInformal">Tone: informal</string>
@@ -129,7 +135,7 @@
     <string name="CloudConfigIncludeApiKeysDesc">API keys of AI and translation services are uploaded to the cloud too.</string>
     <string name="OECloudTitle">Cloud</string>
     <string name="OECloudHeroTitle">Settings in the cloud</string>
-    <string name="OECloudHeroText">Keep your exteraless settings in Telegram and restore them on any device signed in to this account.</string>
+    <string name="OECloudHeroText">Keep your re:exteraless settings in Telegram and restore them on any device signed in to this account.</string>
     <string name="OECloudStatus">Status</string>
     <string name="OECloudLocal">This device</string>
     <string name="OECloudRemote">Cloud</string>

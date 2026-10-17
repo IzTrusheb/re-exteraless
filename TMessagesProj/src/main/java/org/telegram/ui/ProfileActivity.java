@@ -16399,7 +16399,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         if (userId != 0) {
             final TLRPC.User user = getMessagesController().getUser(userId);
             final String name = user != null ? UserObject.getFirstName(user) : String.valueOf(userId);
-            showIdDateHint(anchor, LocaleController.formatString(R.string.OEProfileAccountCreated, name, ProfileDateHelper.getUserTime(userId)));
+            showIdDateHint(anchor, LocaleController.formatString(R.string.OEProfileAccountCreated, name, getUserRegistrationDate(userId)));
             return;
         }
         final TLRPC.Chat chat = getMessagesController().getChat(chatId);
@@ -16456,6 +16456,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             final int format = ChatObject.isChannelAndNotMegaGroup(chat) ? R.string.OEProfileJoinedChannel : R.string.OEProfileJoinedChat;
             showIdDateHint(anchor, LocaleController.formatString(format, chat.title, formatIdDate(date)));
         }
+    }
+
+    private String getUserRegistrationDate(long id) {
+        TLRPC.PeerSettings settings = getMessagesController().getPeerSettings(id);
+        return ProfileDateHelper.getUserTime(id, settings != null ? settings.registration_month : null);
     }
 
     private String formatIdDate(int date) {
@@ -17974,7 +17979,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         int dc = getDc();
         BottomBuilder builder = new BottomBuilder(getParentActivity());
         if (userId != 0) {
-            builder.addTitle(id + "", ProfileDateHelper.getUserTime(id));
+            builder.addTitle(id + "", getUserRegistrationDate(id));
         } else {
             builder.addTitle(id + "");
         }

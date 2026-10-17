@@ -2,6 +2,12 @@
 <resources>
     <string name="OEGeneralTitle">عام</string>
     <string name="OEGeneralOtherTitle">أخرى</string>
+    <string name="OEGeneralMusicSearchHeader">البحث عن الموسيقى</string>
+    <string name="OEGeneralMusicSearch">البحث عن الموسيقى في المحادثات والبحث</string>
+    <string name="OEGeneralMusicSearchAlias">اسم مستعار مخصص</string>
+    <string name="OEGeneralMusicSearchAliasNone">غير محدد</string>
+    <string name="OEGeneralMusicSearchAliasHint">مثال: #music (حروف أو أرقام أو شرطة سفلية، حتى 32 حرفًا).</string>
+    <string name="OEGeneralMusicSearchAliasInvalid">استخدم وسمًا واحدًا يصل إلى 32 حرفًا أو رقمًا أو شرطة سفلية.</string>
     <string name="OEGeneralTranslateHeader">ترجمة الرسائل</string>
     <string name="OEGeneralTranslateButton">زر الترجمة</string>
     <string name="OEGeneralTranslateWholeChat">ترجمة المحادثة بالكامل</string>
@@ -52,7 +58,7 @@
     <string name="OEGeneralImportEtgDone">تم استيراد الإعدادات: %1$d</string>
     <string name="OEGeneralResetSettings">إعادة تعيين الإعدادات</string>
     <string name="OEGeneralResetSettingsInfo">ستُعاد جميع الإعدادات إلى قيمها الافتراضية وسيُعاد تشغيل التطبيق.</string>
-    <string name="OEGeneralResetSettingsDone">تمت إعادة تعيين تفضيلات exteraless.</string>
+    <string name="OEGeneralResetSettingsDone">تمت إعادة تعيين تفضيلات re:exteraless.</string>
     <string name="OEGeneralDeleteAccount">حذف الحساب</string>
     <string name="DeepLFormalityDefault">النبرة: كما هي</string>
     <string name="DeepLFormalityInformal">النبرة: غير رسمية</string>
@@ -109,7 +115,7 @@
     <string name="CloudConfigIncludeApiKeysDesc">تُرفع مفاتيح API لخدمات الذكاء الاصطناعي والترجمة إلى السحابة أيضًا.</string>
     <string name="OECloudTitle">السحابة</string>
     <string name="OECloudHeroTitle">الإعدادات في السحابة</string>
-    <string name="OECloudHeroText">احتفظ بإعدادات exteraless في Telegram واستعدها على أي جهاز مسجّل الدخول إلى هذا الحساب.</string>
+    <string name="OECloudHeroText">احتفظ بإعدادات re:exteraless في Telegram واستعدها على أي جهاز مسجّل الدخول إلى هذا الحساب.</string>
     <string name="OECloudStatus">الحالة</string>
     <string name="OECloudLocal">هذا الجهاز</string>
     <string name="OECloudRemote">السحابة</string>

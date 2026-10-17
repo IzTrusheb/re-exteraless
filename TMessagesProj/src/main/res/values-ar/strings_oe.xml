@@ -18,7 +18,7 @@
     <string name="QrWifiPasswordCopied">تم نسخ كلمة المرور</string>
     <string name="QrWifiUnknownNetwork">اسم الشبكة غير موجود في الرمز</string>
     <string name="QrLoginHint">هذا الرمز يسجّل الدخول إلى حساب. استخدم الإعدادات ← الأجهزة ← ربط جهاز سطح المكتب، فهذه الشاشة تتحقق من الرمز وتحمي حسابك.</string>
-    <string name="OpenExteraPreferences">تفضيلات exteraless</string>
+    <string name="OpenExteraPreferences">تفضيلات re:exteraless</string>
     <string name="OpenExteraDesignSection">التصميم</string>
     <string name="OpenExteraDesigner">الأيقونات والتصميم</string>
     <string name="OpenExteraDesignStudio">استوديو التصميم</string>
@@ -43,7 +43,10 @@
     <string name="OEProfilerStarted">المحلل يعمل. استخدم التطبيق كالمعتاد ثم أوقفه من هنا.</string>
     <string name="OEProfilerShareLast">مشاركة آخر تقرير للمحلل</string>
     <string name="OEProfileIdDate">تاريخ التسجيل والانضمام</string>
-    <string name="OEProfileAccountCreated">انضم **%1$s** إلى تيليجرام %2$s</string>
+    <string name="OEProfileAccountCreated">تاريخ التسجيل التقديري لـ **%1$s**: %2$s</string>
+    <string name="OEProfileRegistrationEstimate">%1$s ± %2$d يومًا</string>
+    <string name="OEProfileRegistrationMonth">%1$s</string>
+    <string name="OEProfileRegistrationUnknown">لا يتوفر تقدير لهذا المعرّف.</string>
     <string name="OEProfileJoinedChat">انضممت إلى **%1$s** في %2$s</string>
     <string name="OEProfileJoinedChannel">اشتركت في **%1$s** في %2$s</string>
     <string name="OEProfileChatCreated">أُنشئ **%1$s** في %2$s</string>

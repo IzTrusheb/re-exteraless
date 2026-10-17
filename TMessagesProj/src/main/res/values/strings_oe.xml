@@ -25,7 +25,7 @@
     <string name="QrWifiPasswordCopied">Password copied</string>
     <string name="QrWifiUnknownNetwork">Network name is missing from the code</string>
     <string name="QrLoginHint">This code logs into an account. Use Settings → Devices → Link Desktop Device — that screen checks the code and protects your account.</string>
-    <string name="AppIconExteraless" translatable="false">exteraless</string>
+    <string name="AppIconExteraless" translatable="false">re:exteraless</string>
     <string name="AppIconBlueprint" translatable="false">Blueprint</string>
     <string name="AppIconRed" translatable="false">Red</string>
     <string name="AppIconNya" translatable="false">Nya</string>
@@ -55,7 +55,11 @@
     <string name="AppIconInfoPremium"><!-- сюда подпись --></string>
     <string name="AppIconInfoTurbo"><!-- сюда подпись --></string>
     <string name="AppIconInfoNox"><!-- сюда подпись --></string>
-    <string name="OpenExteraPreferences">exteraless Preferences</string>
+    <string name="OpenExteraPreferences">re:exteraless Preferences</string>
+    <string name="OESimilarGifts">Similar gifts</string>
+    <string name="OESimilarFilterModel">By model</string>
+    <string name="OESimilarFilterBackdrop">By background</string>
+    <string name="OESimilarFilterPattern">By pattern</string>
     <string name="OpenExteraDesignSection">Design</string>
     <string name="OpenExteraDesigner">Icons and design</string>
     <string name="OpenExteraDesignStudio">Design studio</string>
@@ -89,7 +93,10 @@
     <string name="OEEnergyProfilerShareLast">Share last energy report</string>
     <string name="OEPluginToggleLogShare">Share plugin toggle log</string>
     <string name="OEProfileIdDate">Registration and join date</string>
-    <string name="OEProfileAccountCreated">**%1$s** joined Telegram %2$s</string>
+    <string name="OEProfileAccountCreated">Estimated registration date for **%1$s**: %2$s</string>
+    <string name="OEProfileRegistrationEstimate">%1$s ± %2$d days</string>
+    <string name="OEProfileRegistrationMonth">%1$s</string>
+    <string name="OEProfileRegistrationUnknown">No estimate is available for this ID.</string>
     <string name="OEProfileJoinedChat">You joined **%1$s** on %2$s</string>
     <string name="OEProfileJoinedChannel">You subscribed to **%1$s** on %2$s</string>
     <string name="OEProfileChatCreated">**%1$s** was created on %2$s</string>

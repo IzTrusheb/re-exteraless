@@ -68,6 +68,36 @@ object GeneralConfig {
     }
 
     @JvmField
+    val musicSearchEnabled = addConfig("OEGeneralMusicSearchEnabled", ConfigItem.configTypeBool, true)
+
+    @JvmField
+    val musicSearchAlias = addConfig("OEGeneralMusicSearchAlias", ConfigItem.configTypeString, "")
+
+    @JvmStatic
+    fun isMusicSearchEnabled(): Boolean {
+        loadConfig(false)
+        return musicSearchEnabled.Bool()
+    }
+
+    @JvmStatic
+    fun setMusicSearchEnabled(enabled: Boolean) {
+        loadConfig(false)
+        musicSearchEnabled.setConfigBool(enabled)
+    }
+
+    @JvmStatic
+    fun musicSearchAlias(): String {
+        loadConfig(false)
+        return musicSearchAlias.String() ?: ""
+    }
+
+    @JvmStatic
+    fun setMusicSearchAlias(alias: String) {
+        loadConfig(false)
+        musicSearchAlias.setConfigString(alias)
+    }
+
+    @JvmField
     val crashReports = addConfig("OEGeneralCrashReports", ConfigItem.configTypeBool, false)
 
     @JvmField

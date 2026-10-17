@@ -23,13 +23,17 @@
     <string name="QrWifiPasswordCopied">Пароль скопирован</string>
     <string name="QrWifiUnknownNetwork">В коде нет имени сети</string>
     <string name="QrLoginHint">Этот код входит в аккаунт. Используйте Настройки → Устройства → Подключить устройство: тот экран проверяет код и защищает аккаунт.</string>
-    <string name="AppIconExteraless" translatable="false">exteraless</string>
+    <string name="AppIconExteraless" translatable="false">re:exteraless</string>
     <string name="AppIconBlueprint" translatable="false">Blueprint</string>
     <string name="AppIconRed" translatable="false">Red</string>
     <string name="AppIconNya" translatable="false">Nya</string>
     <string name="AppIconAyu" translatable="false">Ayu</string>
     <string name="AppIconQuack" translatable="false">Quack</string>
-    <string name="OpenExteraPreferences">Настройки exteraless</string>
+    <string name="OpenExteraPreferences">Настройки re:exteraless</string>
+    <string name="OESimilarGifts">Похожие подарки</string>
+    <string name="OESimilarFilterModel">По модели</string>
+    <string name="OESimilarFilterBackdrop">По фону</string>
+    <string name="OESimilarFilterPattern">По узору</string>
     <string name="OpenExteraDesignSection">Дизайн</string>
     <string name="OpenExteraDesigner">Иконки и дизайн</string>
     <string name="OpenExteraDesignStudio">Студия дизайна</string>
@@ -60,7 +64,10 @@
     <string name="OEEnergyProfilerShareLast">Отправить последний отчёт об энергопотреблении</string>
     <string name="OEPluginToggleLogShare">Отправить журнал включения плагинов</string>
     <string name="OEProfileIdDate">Дата регистрации и вступления</string>
-    <string name="OEProfileAccountCreated">Аккаунт **%1$s** создан %2$s</string>
+    <string name="OEProfileAccountCreated">Примерная дата регистрации **%1$s**: %2$s</string>
+    <string name="OEProfileRegistrationEstimate">%1$s ± %2$d дн.</string>
+    <string name="OEProfileRegistrationMonth">%1$s</string>
+    <string name="OEProfileRegistrationUnknown">Для этого ID оценка недоступна.</string>
     <string name="OEProfileJoinedChat">Вы вступили в **%1$s** %2$s</string>
     <string name="OEProfileJoinedChannel">Вы подписались на **%1$s** %2$s</string>
     <string name="OEProfileChatCreated">**%1$s** создан %2$s</string>

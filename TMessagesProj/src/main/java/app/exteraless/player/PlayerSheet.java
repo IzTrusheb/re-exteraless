@@ -445,6 +445,11 @@ public class PlayerSheet extends BottomSheet implements NotificationCenter.Notif
         controls.prev.setOnClickListener(v -> MediaController.getInstance().playPreviousMessage());
         controls.next.setOnClickListener(v -> MediaController.getInstance().playNextMessage());
         controls.play.setOnClickListener(v -> togglePlay());
+        controls.setM3Shape(PlayerSettings.m3Shape());
+        controls.play.setOnLongClickListener(v -> {
+            showM3ShapesMenu(v);
+            return true;
+        });
         controls.shuffle.setContentDescription(getString(R.string.ShuffleList));
         controls.prev.setContentDescription(getString(R.string.AccDescrPrevious));
         controls.next.setContentDescription(getString(R.string.Next));
@@ -1514,6 +1519,104 @@ public class PlayerSheet extends BottomSheet implements NotificationCenter.Notif
         o.show();
     }
 
+    private void showM3ShapesMenu(View anchor) {
+        if (activity == null) {
+            return;
+        }
+        Theme.ResourcesProvider rp = colors.provider(resourcesProvider);
+        ItemOptions options = ItemOptions.makeOptions(container, rp, anchor, true, false, true)
+                .setMaxHeight(dp(560));
+        addM3ShapeOption(options, PlayerSettings.BUTTON_SHAPE_CLASSIC, R.string.OEPlayerShapeClassic);
+        options.addGap();
+        options.addText(getString(R.string.OEPlayerShapesM3), 12, dp(220));
+        options.addGap();
+        int[] shapeIds = {
+                PlayerSettings.BUTTON_SHAPE_M3_CIRCLE,
+                PlayerSettings.BUTTON_SHAPE_M3_SLANTED,
+                PlayerSettings.BUTTON_SHAPE_M3_ARCH,
+                PlayerSettings.BUTTON_SHAPE_M3_FAN,
+                PlayerSettings.BUTTON_SHAPE_M3_ARROW,
+                PlayerSettings.BUTTON_SHAPE_M3_SEMICIRCLE,
+                PlayerSettings.BUTTON_SHAPE_M3_OVAL,
+                PlayerSettings.BUTTON_SHAPE_M3_PILL,
+                PlayerSettings.BUTTON_SHAPE_M3_TRIANGLE,
+                PlayerSettings.BUTTON_SHAPE_M3_DIAMOND,
+                PlayerSettings.BUTTON_SHAPE_M3_CLAMSHELL,
+                PlayerSettings.BUTTON_SHAPE_M3_PENTAGON,
+                PlayerSettings.BUTTON_SHAPE_M3_GEM,
+                PlayerSettings.BUTTON_SHAPE_M3_VERY_SUNNY,
+                PlayerSettings.BUTTON_SHAPE_M3_SUNNY,
+                PlayerSettings.BUTTON_SHAPE_M3_COOKIE_4,
+                PlayerSettings.BUTTON_SHAPE_M3_COOKIE_6,
+                PlayerSettings.BUTTON_SHAPE_M3_COOKIE_7,
+                PlayerSettings.BUTTON_SHAPE_M3_COOKIE_9,
+                PlayerSettings.BUTTON_SHAPE_M3_COOKIE_12,
+                PlayerSettings.BUTTON_SHAPE_M3_GHOSTISH,
+                PlayerSettings.BUTTON_SHAPE_M3_CLOVER_4,
+                PlayerSettings.BUTTON_SHAPE_M3_CLOVER_8,
+                PlayerSettings.BUTTON_SHAPE_M3_BURST,
+                PlayerSettings.BUTTON_SHAPE_M3_SOFT_BURST,
+                PlayerSettings.BUTTON_SHAPE_M3_BOOM,
+                PlayerSettings.BUTTON_SHAPE_M3_SOFT_BOOM,
+                PlayerSettings.BUTTON_SHAPE_M3_FLOWER,
+                PlayerSettings.BUTTON_SHAPE_M3_PUFFY,
+                PlayerSettings.BUTTON_SHAPE_M3_PUFFY_DIAMOND,
+                PlayerSettings.BUTTON_SHAPE_M3_PIXEL_CIRCLE,
+                PlayerSettings.BUTTON_SHAPE_M3_PIXEL_TRIANGLE,
+                PlayerSettings.BUTTON_SHAPE_M3_BUN,
+                PlayerSettings.BUTTON_SHAPE_M3_HEART
+        };
+        int[] shapeLabels = {
+                R.string.OEPlayerShapeM3Circle,
+                R.string.OEPlayerShapeM3Slanted,
+                R.string.OEPlayerShapeM3Arch,
+                R.string.OEPlayerShapeM3Fan,
+                R.string.OEPlayerShapeM3Arrow,
+                R.string.OEPlayerShapeM3Semicircle,
+                R.string.OEPlayerShapeM3Oval,
+                R.string.OEPlayerShapeM3Pill,
+                R.string.OEPlayerShapeM3Triangle,
+                R.string.OEPlayerShapeM3Diamond,
+                R.string.OEPlayerShapeM3Clamshell,
+                R.string.OEPlayerShapeM3Pentagon,
+                R.string.OEPlayerShapeM3Gem,
+                R.string.OEPlayerShapeM3VerySunny,
+                R.string.OEPlayerShapeM3Sunny,
+                R.string.OEPlayerShapeM3Cookie4,
+                R.string.OEPlayerShapeM3Cookie6,
+                R.string.OEPlayerShapeM3Cookie7,
+                R.string.OEPlayerShapeM3Cookie9,
+                R.string.OEPlayerShapeM3Cookie12,
+                R.string.OEPlayerShapeM3Ghostish,
+                R.string.OEPlayerShapeM3Clover4,
+                R.string.OEPlayerShapeM3Clover8,
+                R.string.OEPlayerShapeM3Burst,
+                R.string.OEPlayerShapeM3SoftBurst,
+                R.string.OEPlayerShapeM3Boom,
+                R.string.OEPlayerShapeM3SoftBoom,
+                R.string.OEPlayerShapeM3Flower,
+                R.string.OEPlayerShapeM3Puffy,
+                R.string.OEPlayerShapeM3PuffyDiamond,
+                R.string.OEPlayerShapeM3PixelCircle,
+                R.string.OEPlayerShapeM3PixelTriangle,
+                R.string.OEPlayerShapeM3Bun,
+                R.string.OEPlayerShapeM3Heart
+        };
+        for (int i = 0; i < shapeIds.length; i++) {
+            addM3ShapeOption(options, shapeIds[i], shapeLabels[i]);
+        }
+        options.setGravity(Gravity.CENTER_HORIZONTAL);
+        options.show();
+    }
+
+    private void addM3ShapeOption(ItemOptions options, int shape, int labelRes) {
+        options.addChecked(PlayerSettings.m3Shape() == shape,
+                new PlayerShapePreviewDrawable(shape), getString(labelRes), () -> {
+            PlayerSettings.setM3Shape(shape);
+            controls.setM3Shape(shape);
+        });
+    }
+
     private boolean onCoverTouch(View v, MotionEvent e) {
         if (coverAnimating) {
             return false;
@@ -1644,7 +1747,7 @@ public class PlayerSheet extends BottomSheet implements NotificationCenter.Notif
         controls.repeat.setBadgeColors(c.primary, c.onPrimary);
         controls.prev.setColors(c.primaryContainer, c.onPrimaryContainer, c.primaryContainer, c.onPrimaryContainer);
         controls.next.setColors(c.primaryContainer, c.onPrimaryContainer, c.primaryContainer, c.onPrimaryContainer);
-        controls.play.setColors(c.primary, c.onPrimary, c.primary, c.onPrimary);
+        controls.play.setColors(c.primaryContainer, c.onPrimaryContainer, c.primaryContainer, c.onPrimaryContainer);
         speedButton.setColors(c.surfaceHigh, c.onSurface, c.surfaceHigh, c.onSurface);
         lyricsButton.setColors(c.surfaceHigh, c.onSurface, c.primary, c.onPrimary);
         queueButton.setColors(c.surfaceHigh, c.onSurface, c.surfaceHigh, c.onSurface);

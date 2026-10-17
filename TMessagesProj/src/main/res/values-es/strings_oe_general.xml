@@ -2,6 +2,12 @@
 <resources>
     <string name="OEGeneralTitle">General</string>
     <string name="OEGeneralOtherTitle">Otros</string>
+    <string name="OEGeneralMusicSearchHeader">Búsqueda de música</string>
+    <string name="OEGeneralMusicSearch">Búsqueda de música en chats y búsqueda</string>
+    <string name="OEGeneralMusicSearchAlias">Alias personalizado</string>
+    <string name="OEGeneralMusicSearchAliasNone">Sin configurar</string>
+    <string name="OEGeneralMusicSearchAliasHint">Escribe un hashtag, p. ej. #music (letras, números o guion bajo; máximo 32 caracteres).</string>
+    <string name="OEGeneralMusicSearchAliasInvalid">Usa un solo hashtag de hasta 32 letras, números o guiones bajos.</string>
     <string name="OEGeneralTranslateHeader">Traducir mensajes</string>
     <string name="OEGeneralTranslateButton">Botón de traducir</string>
     <string name="OEGeneralTranslateWholeChat">Traducir todo el chat</string>
@@ -52,7 +58,7 @@
     <string name="OEGeneralImportEtgDone">Ajustes importados: %1$d</string>
     <string name="OEGeneralResetSettings">Restablecer ajustes</string>
     <string name="OEGeneralResetSettingsInfo">Todos los ajustes volverán a sus valores predeterminados y la app se reiniciará.</string>
-    <string name="OEGeneralResetSettingsDone">Se restablecieron los ajustes de exteraless.</string>
+    <string name="OEGeneralResetSettingsDone">Se restablecieron los ajustes de re:exteraless.</string>
     <string name="OEGeneralDeleteAccount">Eliminar cuenta</string>
     <string name="DeepLFormalityDefault">Tono: como venga</string>
     <string name="DeepLFormalityInformal">Tono: informal</string>

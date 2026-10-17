@@ -106,13 +106,41 @@ public class ResaleGiftsFragment extends BaseFragment implements FactorAnimator.
     private final long gift_id;
     private final String gift_name;
     private final ResaleGiftsList list;
+    private final boolean similarFiltersMode;
+    private final TL_stars.StarGiftAttributeId similarModelFilter;
+    private final TL_stars.StarGiftAttributeId similarBackdropFilter;
+    private final TL_stars.StarGiftAttributeId similarPatternFilter;
+    private boolean similarModelSelected;
+    private boolean similarBackdropSelected;
+    private boolean similarPatternSelected;
+    private final TextView[] similarFilterButtons = new TextView[3];
 
     public ResaleGiftsFragment(long dialogId, String gift_name, long gift_id, Theme.ResourcesProvider resourcesProvider) {
+        this(dialogId, gift_name, gift_id, resourcesProvider, null, null, null, false);
+    }
+
+    public ResaleGiftsFragment(long dialogId, String gift_name, long gift_id, Theme.ResourcesProvider resourcesProvider,
+                               TL_stars.StarGiftAttributeId modelFilter, TL_stars.StarGiftAttributeId backdropFilter,
+                               TL_stars.StarGiftAttributeId patternFilter) {
+        this(dialogId, gift_name, gift_id, resourcesProvider, modelFilter, backdropFilter, patternFilter, true);
+    }
+
+    private ResaleGiftsFragment(long dialogId, String gift_name, long gift_id, Theme.ResourcesProvider resourcesProvider,
+                                TL_stars.StarGiftAttributeId modelFilter, TL_stars.StarGiftAttributeId backdropFilter,
+                                TL_stars.StarGiftAttributeId patternFilter, boolean similarFiltersMode) {
         this.dialogId = dialogId;
         this.gift_name = gift_name;
         this.gift_id = gift_id;
         this.resourceProvider = resourcesProvider;
+        this.similarFiltersMode = similarFiltersMode;
+        similarModelFilter = modelFilter;
+        similarBackdropFilter = backdropFilter;
+        similarPatternFilter = patternFilter;
+        similarModelSelected = modelFilter != null;
+        similarBackdropSelected = modelFilter == null && backdropFilter != null;
+        similarPatternSelected = modelFilter == null && backdropFilter == null && patternFilter != null;
         list = new ResaleGiftsList(currentAccount, gift_id, this::updateList);
+        updateListSimilarFilters();
         list.load();
     }
 
@@ -708,8 +736,20 @@ public class ResaleGiftsFragment extends BaseFragment implements FactorAnimator.
             ie.show();
         });
 
+        if (similarFiltersMode) {
+            modelButton.setVisibility(View.GONE);
+            backdropButton.setVisibility(View.GONE);
+            patternButton.setVisibility(View.GONE);
+            onlyStarsContainer.setVisibility(View.GONE);
+            clearFiltersContainer.setVisibility(View.GONE);
+        }
+
         fireworksOverlay = new FireworksOverlay(getContext());
         fragmentView.addView(fireworksOverlay, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+
+        if (similarFiltersMode) {
+            addSimilarFiltersBar(context, fragmentView);
+        }
 
         setFiltersShown(false, false);
 
@@ -755,6 +795,87 @@ public class ResaleGiftsFragment extends BaseFragment implements FactorAnimator.
         }
     }
 
+    private void addSimilarFiltersBar(Context context, FrameLayout parent) {
+        LinearLayout bar = new LinearLayout(context);
+        bar.setOrientation(LinearLayout.HORIZONTAL);
+        bar.setGravity(Gravity.CENTER_VERTICAL);
+        bar.setPadding(dp(8), dp(8), dp(8), dp(8));
+        bar.setBackground(iBlur3Factory.create(bar)
+            .setColorProvider(BlurredBackgroundProviderImpl.shadow(resourceProvider))
+            .setPadding(dp(8))
+            .setRadius(dp(24)));
+
+        int[] labels = { R.string.OESimilarFilterModel, R.string.OESimilarFilterBackdrop, R.string.OESimilarFilterPattern };
+        for (int i = 0; i < similarFilterButtons.length; i++) {
+            final int filterIndex = i;
+            TextView button = new TextView(context);
+            button.setText(getString(labels[i]));
+            button.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+            button.setTypeface(AndroidUtilities.bold());
+            button.setGravity(Gravity.CENTER);
+            button.setSingleLine(true);
+            button.setEllipsize(TextUtils.TruncateAt.END);
+            button.setPadding(dp(8), 0, dp(8), 0);
+            button.setOnClickListener(v -> toggleSimilarFilter(filterIndex));
+            ScaleStateListAnimator.apply(button, 0.04f, 1.5f);
+
+            LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(0, LayoutHelper.MATCH_PARENT, 1.0f);
+            buttonParams.leftMargin = dp(4);
+            buttonParams.rightMargin = dp(4);
+            bar.addView(button, buttonParams);
+            similarFilterButtons[i] = button;
+        }
+
+        FrameLayout.LayoutParams barParams = LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 64,
+            Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 14, 0, 14,
+            AndroidUtilities.navigationBarHeight / AndroidUtilities.density + 8);
+        parent.addView(bar, barParams);
+        updateSimilarFilterButtons();
+    }
+
+    private void toggleSimilarFilter(int index) {
+        if (index == 0 && similarModelFilter != null) {
+            similarModelSelected = !similarModelSelected;
+        } else if (index == 1 && similarBackdropFilter != null) {
+            similarBackdropSelected = !similarBackdropSelected;
+        } else if (index == 2 && similarPatternFilter != null) {
+            similarPatternSelected = !similarPatternSelected;
+        } else {
+            return;
+        }
+        updateListSimilarFilters();
+        updateSimilarFilterButtons();
+        list.reload();
+    }
+
+    private void updateListSimilarFilters() {
+        if (list == null) return;
+        list.setSimilarFilters(
+            similarModelSelected ? similarModelFilter : null,
+            similarBackdropSelected ? similarBackdropFilter : null,
+            similarPatternSelected ? similarPatternFilter : null
+        );
+    }
+
+    private void updateSimilarFilterButtons() {
+        if (!similarFiltersMode) return;
+        int accent = getThemedColor(Theme.key_featuredStickers_addButton);
+        int base = getThemedColor(Theme.key_windowBackgroundWhite);
+        boolean[] selected = { similarModelSelected, similarBackdropSelected, similarPatternSelected };
+        boolean[] available = { similarModelFilter != null, similarBackdropFilter != null, similarPatternFilter != null };
+        for (int i = 0; i < similarFilterButtons.length; i++) {
+            TextView button = similarFilterButtons[i];
+            if (button == null) continue;
+            int normal = Theme.blendOver(base, Theme.multAlpha(accent, selected[i] ? 0.18f : 0.06f));
+            int pressed = Theme.blendOver(base, Theme.multAlpha(accent, 0.24f));
+            button.setSelected(selected[i]);
+            button.setBackground(Theme.createSimpleSelectorRoundRectDrawable(dp(24), normal, pressed));
+            button.setTextColor(selected[i] ? accent : getThemedColor(Theme.key_windowBackgroundWhiteBlackText));
+            button.setEnabled(available[i]);
+            button.setAlpha(available[i] ? 1.0f : 0.45f);
+        }
+    }
+
     private void updateList(boolean first) {
         if (list.getTotalCount() > 12) {
             setFiltersShown(true, true);
@@ -787,7 +908,7 @@ public class ResaleGiftsFragment extends BaseFragment implements FactorAnimator.
         if (isLoadingVisible()) {
             list.load();
         }
-        boolean show = (list.loading || list.getTotalCount() > 0) && (!list.notSelectedModelAttributes.isEmpty() || !list.notSelectedBackdropAttributes.isEmpty() || !list.notSelectedPatternAttributes.isEmpty());
+        boolean show = !similarFiltersMode && (list.loading || list.getTotalCount() > 0) && (!list.notSelectedModelAttributes.isEmpty() || !list.notSelectedBackdropAttributes.isEmpty() || !list.notSelectedPatternAttributes.isEmpty());
         animatorClearFiltersButtonVisible.setValue(show, true);
     }
 
@@ -1003,6 +1124,16 @@ public class ResaleGiftsFragment extends BaseFragment implements FactorAnimator.
 
         private boolean starsOnly;
 
+        private final ArrayList<TL_stars.StarGiftAttributeId> similarAttributes = new ArrayList<>();
+
+        public void setSimilarFilters(TL_stars.StarGiftAttributeId model, TL_stars.StarGiftAttributeId backdrop,
+                                      TL_stars.StarGiftAttributeId pattern) {
+            similarAttributes.clear();
+            if (model != null) similarAttributes.add(model);
+            if (backdrop != null) similarAttributes.add(backdrop);
+            if (pattern != null) similarAttributes.add(pattern);
+        }
+
         private boolean for_craft;
         public ResaleGiftsList forCraft() {
             this.for_craft = true;
@@ -1041,8 +1172,9 @@ public class ResaleGiftsFragment extends BaseFragment implements FactorAnimator.
                 req.flags |= 1;
                 req.attributes_hash = 0;
             }
-            if (!notSelectedModelAttributes.isEmpty() || !notSelectedBackdropAttributes.isEmpty() || !notSelectedPatternAttributes.isEmpty()) {
+            if (!similarAttributes.isEmpty() || !notSelectedModelAttributes.isEmpty() || !notSelectedBackdropAttributes.isEmpty() || !notSelectedPatternAttributes.isEmpty()) {
                 req.flags |= 8;
+                req.attributes.addAll(similarAttributes);
                 if (!notSelectedModelAttributes.isEmpty()) {
                     for (TL_stars.starGiftAttributeModel attr : modelAttributes) {
                         if (!notSelectedModelAttributes.contains(attr.document.id)) {

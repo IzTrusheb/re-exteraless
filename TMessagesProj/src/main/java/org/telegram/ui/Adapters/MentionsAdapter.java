@@ -985,14 +985,11 @@ public class MentionsAdapter extends RecyclerListView.SelectionAdapter implement
             clearStickers();
             return;
         }
-        if (!usernameOnly && needBotContext) {
+        if (!usernameOnly && needBotContext && MusicSearchUtils.isMusicSearchEnabled()) {
             int cursorPosition = position < 0 ? text.length() : Math.min(position, text.length());
             String textToCursor = text.substring(0, cursorPosition);
-            final String musicPrefix = "#мч";
-            if (textToCursor.length() >= musicPrefix.length()
-                    && textToCursor.regionMatches(true, 0, musicPrefix, 0, musicPrefix.length())
-                    && (textToCursor.length() == musicPrefix.length() || Character.isWhitespace(textToCursor.charAt(musicPrefix.length())))) {
-                String query = textToCursor.substring(musicPrefix.length()).trim();
+            String query = MusicSearchUtils.getMusicSearchQueryAtCursor(textToCursor);
+            if (query != null) {
                 lastText = null;
                 clearStickers();
                 if (query.isEmpty()) {

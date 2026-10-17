@@ -9,69 +9,164 @@ import org.telegram.messenger.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
+/**
+ * Android adaptation of the offline Telegram ID-age estimator from
+ * sepiol026-wq/telegram-id-age-research, main.py at the revision pinned in id_date.json.
+ * The source project is AGPL-3.0-only; its license is bundled in app assets.
+ *
+ * ID-based dates are estimates, not Telegram records. Their reported error range is
+ * empirical and explicitly not guaranteed by the source research.
+ */
 public class ProfileDateHelper {
     private static final String JSON_FILE = "id_date.json";
-    private static final ArrayList<ProfileDateData> profileDateDataList = new ArrayList<>();
+    private static final ArrayList<ProfileDateData> dateAnchors = new ArrayList<>();
+    private static final ArrayList<ProfileDateData> uncertaintyAnchors = new ArrayList<>();
+    private static final Map<Long, Long> knownDates = new HashMap<>();
+
+    private static boolean loaded;
+    private static long minimumSupportedId;
+    private static long maximumSupportedId;
+    private static long minimumTimestamp;
 
     private static void loadData() {
-        try {
-            InputStream in = ApplicationLoader.applicationContext.getAssets().open(JSON_FILE);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[10240];
-            int c;
-            while ((c = in.read(buffer)) != -1) {
-                bos.write(buffer, 0, c);
+        synchronized (ProfileDateHelper.class) {
+            if (loaded) {
+                return;
             }
-            bos.close();
-            in.close();
-            String json = bos.toString("UTF-8");
-            JSONObject object = new JSONObject(json);
-            JSONArray data = object.getJSONArray("data");
-            profileDateDataList.clear();
-            for (int i = 0; i<data.length(); i++){
-                JSONObject o = data.getJSONObject(i);
-                profileDateDataList.add(new ProfileDateData(o.getLong("id"), o.getLong("date")));
+            loaded = true;
+            try (InputStream in = ApplicationLoader.applicationContext.getAssets().open(JSON_FILE);
+                 ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                byte[] buffer = new byte[8192];
+                int count;
+                while ((count = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, count);
+                }
+
+                JSONObject object = new JSONObject(out.toString("UTF-8"));
+                minimumSupportedId = object.getLong("minSupportedId");
+                maximumSupportedId = object.getLong("maxSupportedId");
+                minimumTimestamp = object.getLong("minimumTimestamp");
+                readPairs(object.getJSONArray("A"), dateAnchors);
+                readPairs(object.getJSONArray("U"), uncertaintyAnchors);
+
+                JSONArray samples = object.getJSONArray("K");
+                for (int i = 0; i < samples.length(); i++) {
+                    JSONArray pair = samples.getJSONArray(i);
+                    knownDates.put(pair.getLong(0), pair.getLong(1));
+                }
+            } catch (Exception e) {
+                dateAnchors.clear();
+                uncertaintyAnchors.clear();
+                knownDates.clear();
+                FileLog.e(e);
             }
-        } catch (Exception e) {
-            FileLog.e(e);
         }
     }
 
-    public static String getUserTime(String prefix, long date) {
-        String st = LocaleController.formatString(R.string.formatDateAtTime, LocaleController.getInstance().getFormatterYear().format(new Date(date)), LocaleController.getInstance().getFormatterDay().format(new Date(date)));
-        return prefix + " " + st;
+    private static void readPairs(JSONArray source, ArrayList<ProfileDateData> destination) throws Exception {
+        for (int i = 0; i < source.length(); i++) {
+            JSONArray pair = source.getJSONArray(i);
+            destination.add(new ProfileDateData(pair.getLong(0), pair.getLong(1)));
+        }
     }
 
     public static String getUserTime(Long userId) {
-        if (profileDateDataList.isEmpty()) {
-            loadData();
-        }
-        if (profileDateDataList.isEmpty()) {
-            return "unknown";
-        }
-        for (int i = 1; i < profileDateDataList.size(); i++){
-            ProfileDateData data1 = profileDateDataList.get(i - 1);
-            ProfileDateData data2 = profileDateDataList.get(i);
-            if (userId >= data1.id() && userId <= data2.id()) {
-                long idx = userId - data1.id();
-                long idxRange = data2.id() - data1.id();
-                double t = (double) idx / idxRange;
-                long date1 = data1.date();
-                long date2 = data2.date();
-                double date = (date1 + t * (date2 - date1)) * 1000.0;
-                long dateLong = Math.round(date);
-                return getUserTime("~", dateLong);
-            }
-        }
-        if (userId <= 1000000) {
-            return getUserTime("=", 1380326400000L);
-        }
-        return getUserTime(">", 1711889200000L);
+        return getUserTime(userId, null);
     }
 
-    public record ProfileDateData(long id, long date) {
+    public static String getUserTime(Long userId, String registrationMonth) {
+        if (userId == null || userId <= 0) {
+            return LocaleController.getString(R.string.OEProfileRegistrationUnknown);
+        }
+
+        String formattedMonth = formatRegistrationMonth(registrationMonth);
+        if (formattedMonth != null) {
+            return LocaleController.formatString(R.string.OEProfileRegistrationMonth, formattedMonth);
+        }
+
+        loadData();
+        if (dateAnchors.isEmpty() || uncertaintyAnchors.isEmpty()
+                || userId < minimumSupportedId || userId > maximumSupportedId) {
+            return LocaleController.getString(R.string.OEProfileRegistrationUnknown);
+        }
+
+        long now = System.currentTimeMillis() / 1000L;
+        long timestamp = knownDates.containsKey(userId)
+                ? knownDates.get(userId)
+                : Math.round(interpolate(dateAnchors, userId));
+        timestamp = Math.max(minimumTimestamp, Math.min(timestamp, now));
+
+        int uncertaintyDays = (int) Math.ceil(interpolate(uncertaintyAnchors, userId));
+
+        return LocaleController.formatString(
+                R.string.OEProfileRegistrationEstimate,
+                formatUtcDate(timestamp),
+                uncertaintyDays);
+    }
+
+    private static double interpolate(ArrayList<ProfileDateData> anchors, long id) {
+        if (id <= anchors.get(0).id()) {
+            return anchors.get(0).value();
+        }
+        int last = anchors.size() - 1;
+        if (id >= anchors.get(last).id()) {
+            return anchors.get(last).value();
+        }
+
+        int low = 0;
+        int high = last;
+        while (high - low > 1) {
+            int middle = (low + high) >>> 1;
+            if (anchors.get(middle).id() <= id) {
+                low = middle;
+            } else {
+                high = middle;
+            }
+        }
+
+        ProfileDateData left = anchors.get(low);
+        ProfileDateData right = anchors.get(high);
+        double fraction = (double) (id - left.id()) / (right.id() - left.id());
+        return left.value() + (right.value() - left.value()) * fraction;
+    }
+
+    private static String formatRegistrationMonth(String registrationMonth) {
+        if (registrationMonth == null) {
+            return null;
+        }
+        try {
+            String[] parts = registrationMonth.split("\\.", -1);
+            if (parts.length != 2) {
+                return null;
+            }
+            int month = Integer.parseInt(parts[0]);
+            int year = Integer.parseInt(parts[1]);
+            if (month < 1 || month > 12 || year < 2013 || year > 2200) {
+                return null;
+            }
+            Calendar calendar = Calendar.getInstance(LocaleController.getInstance().getCurrentLocale());
+            calendar.clear();
+            calendar.set(year, month - 1, 1);
+            return LocaleController.formatYearMont(calendar.getTimeInMillis() / 1000L, true);
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    private static String formatUtcDate(long timestamp) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        format.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+        return format.format(new Date(timestamp * 1000L));
+    }
+
+    private record ProfileDateData(long id, long value) {
     }
 }

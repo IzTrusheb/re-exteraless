@@ -49,7 +49,7 @@ public class PlayerQueueSheet extends BottomSheet implements NotificationCenter.
     private final TextView subtitle;
     private final TextView chip;
     private final GradientDrawable chipBg = new GradientDrawable();
-    private final PlayerIcon chipIcon = PlayerIcon.stroke(PlayerIcon.SHUFFLE, 18);
+    private final PlayerIcon chipIcon = PlayerIcon.fill(PlayerIcon.SHUFFLE, 18);
     private final Adapter adapter = new Adapter();
     private boolean touchInList;
 

@@ -18,7 +18,7 @@
     <string name="QrWifiPasswordCopied">密码已复制</string>
     <string name="QrWifiUnknownNetwork">二维码中没有网络名称</string>
     <string name="QrLoginHint">此二维码用于登录账号。请改用「设置 → 设备 → 关联桌面设备」，该界面会校验二维码并保护你的账号。</string>
-    <string name="OpenExteraPreferences">exteraless 设置</string>
+    <string name="OpenExteraPreferences">re:exteraless 设置</string>
     <string name="OpenExteraDesignSection">设计</string>
     <string name="OpenExteraDesigner">图标与设计</string>
     <string name="OpenExteraDesignStudio">设计工作室</string>
@@ -43,7 +43,10 @@
     <string name="OEProfilerStarted">分析器正在运行。照常使用应用，然后在这里停止。</string>
     <string name="OEProfilerShareLast">分享上一次分析报告</string>
     <string name="OEProfileIdDate">注册与加入日期</string>
-    <string name="OEProfileAccountCreated">**%1$s** 加入 Telegram 的时间 %2$s</string>
+    <string name="OEProfileAccountCreated">**%1$s** 的注册日期估算：%2$s</string>
+    <string name="OEProfileRegistrationEstimate">%1$s ± %2$d 天</string>
+    <string name="OEProfileRegistrationMonth">%1$s</string>
+    <string name="OEProfileRegistrationUnknown">无法估算此 ID 的注册日期。</string>
     <string name="OEProfileJoinedChat">你于 %2$s 加入 **%1$s**</string>
     <string name="OEProfileJoinedChannel">你于 %2$s 订阅 **%1$s**</string>
     <string name="OEProfileChatCreated">**%1$s** 创建于 %2$s</string>

@@ -1050,6 +1050,9 @@ public class StarGiftSheet extends BottomSheetWithRecyclerListView implements No
             .addIf(canCraft(), R.drawable.outline_craft, getString(R.string.GiftCraft), () -> {
                 openCrafting(true);
             })
+            .addIf(giftUnique != null && giftUnique.gift_id > 0, R.drawable.msg_search, getString(R.string.OESimilarGifts), () -> {
+                openSimilarGifts(giftUnique);
+            })
             .addIf(getUniqueGift() != null && isMineWithActions(currentAccount, DialogObject.getPeerDialogId(getUniqueGift().owner_id)) && getUniqueGift().resell_amount != null, R.drawable.menu_edit_price, getString(R.string.Gift2ChangePrice), () -> {
                 onUpdatePriceClick(null);
             })
@@ -1072,6 +1075,58 @@ public class StarGiftSheet extends BottomSheetWithRecyclerListView implements No
             .setDimAlpha(0)
             .translate(0, -dp(2))
             .show();
+    }
+
+    private void openSimilarGifts(TL_stars.TL_starGiftUnique giftUnique) {
+        final BaseFragment lastFragment = LaunchActivity.getSafeLastFragment();
+        if (lastFragment == null || giftUnique == null) {
+            return;
+        }
+
+        final BaseFragment.BottomSheetParams bottomSheetParams = new BaseFragment.BottomSheetParams();
+        bottomSheetParams.transitionFromLeft = true;
+        bottomSheetParams.allowNestedScroll = false;
+
+        final TL_stars.StarGiftAttributeId[] similarFilters = similarGiftFilters(giftUnique);
+        final ResaleGiftsFragment fragment = new ResaleGiftsFragment(
+                getDialogId(), giftUnique.title, giftUnique.gift_id, resourcesProvider,
+                similarFilters[0], similarFilters[1], similarFilters[2]);
+        fragment.setCloseParentSheet(fragmentsImmediately -> {
+            if (closeParentSheet != null) {
+                closeParentSheet.run(fragmentsImmediately);
+            }
+            if (fragmentsImmediately) {
+                skipDismissAnimation();
+            }
+            dismiss();
+        });
+        lastFragment.showAsSheet(fragment, bottomSheetParams);
+    }
+
+    private TL_stars.StarGiftAttributeId[] similarGiftFilters(TL_stars.TL_starGiftUnique giftUnique) {
+        final TL_stars.StarGiftAttributeId[] filters = new TL_stars.StarGiftAttributeId[3];
+
+        final TL_stars.starGiftAttributeModel model = findAttribute(giftUnique.attributes, TL_stars.starGiftAttributeModel.class);
+        if (model != null && model.document != null) {
+            final TL_stars.starGiftAttributeIdModel filter = new TL_stars.starGiftAttributeIdModel();
+            filter.document_id = model.document.id;
+            filters[0] = filter;
+        }
+
+        final TL_stars.starGiftAttributeBackdrop backdrop = findAttribute(giftUnique.attributes, TL_stars.starGiftAttributeBackdrop.class);
+        if (backdrop != null) {
+            final TL_stars.starGiftAttributeIdBackdrop filter = new TL_stars.starGiftAttributeIdBackdrop();
+            filter.backdrop_id = backdrop.backdrop_id;
+            filters[1] = filter;
+        }
+
+        final TL_stars.starGiftAttributePattern pattern = findAttribute(giftUnique.attributes, TL_stars.starGiftAttributePattern.class);
+        if (pattern != null && pattern.document != null) {
+            final TL_stars.starGiftAttributeIdPattern filter = new TL_stars.starGiftAttributeIdPattern();
+            filter.document_id = pattern.document.id;
+            filters[2] = filter;
+        }
+        return filters;
     }
 
     private void showGiftOfferSheet() {

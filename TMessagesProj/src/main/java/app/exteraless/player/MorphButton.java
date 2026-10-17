@@ -4,6 +4,7 @@ import static org.telegram.messenger.AndroidUtilities.dp;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -35,9 +36,10 @@ public class MorphButton extends android.view.View {
     private final Paint badgePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private final TextPaint badgeTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-    private final RectF rect = new RectF();
     private final Path path = new Path();
+    private final RectF rect = new RectF();
     private final float[] radii = new float[8];
+    private final Matrix shapeMatrix = new Matrix();
     private PlayerIcon icon;
     private PlayerIcon altIcon;
     private String text;
@@ -48,6 +50,8 @@ public class MorphButton extends android.view.View {
     private int activeFgColor;
     private int badgeBg;
     private int badgeFg;
+    // Auxiliary buttons retain their original corners; ControlsRow applies the chosen preset.
+    private int shape = PlayerSettings.BUTTON_SHAPE_CLASSIC;
     private long lastFrame;
     private PressListener pressListener;
     float baseHeight;
@@ -112,8 +116,18 @@ public class MorphButton extends android.view.View {
         invalidate();
     }
 
-    public void setRadius(float r, boolean animated) {
-        setRadius(r, r, animated);
+    public void setRadius(float radius, boolean animated) {
+        setRadius(radius, radius, animated);
+    }
+
+    public void setShape(int value) {
+        if (!PlayerSettings.isValidButtonShape(value)) {
+            value = PlayerSettings.BUTTON_SHAPE_DEFAULT;
+        }
+        if (shape != value) {
+            shape = value;
+            invalidate();
+        }
     }
 
     public void setAlt(boolean value, boolean animated) {
@@ -178,16 +192,22 @@ public class MorphButton extends android.view.View {
         float a = Math.max(0f, Math.min(1f, active.value));
         int bg = ColorUtils.blendARGB(bgColor, activeBgColor, a);
         int fg = ColorUtils.blendARGB(fgColor, activeFgColor, a);
-        float half = Math.min(w, h) / 2f;
-        float rl = Math.max(0f, Math.min(half, radiusLeft.value * scale));
-        float rr = Math.max(0f, Math.min(half, radiusRight.value * scale));
         if ((bg >>> 24) != 0) {
             bgPaint.setColor(bg);
-            rect.set(0, 0, w, h);
-            radii[0] = radii[1] = radii[6] = radii[7] = rl;
-            radii[2] = radii[3] = radii[4] = radii[5] = rr;
-            path.rewind();
-            path.addRoundRect(rect, radii, Path.Direction.CW);
+            if (shape == PlayerSettings.BUTTON_SHAPE_CLASSIC) {
+                float half = Math.min(w, h) / 2f;
+                float left = Math.max(0f, Math.min(half, radiusLeft.value * scale));
+                float right = Math.max(0f, Math.min(half, radiusRight.value * scale));
+                radii[0] = radii[1] = radii[6] = radii[7] = left;
+                radii[2] = radii[3] = radii[4] = radii[5] = right;
+                rect.set(0, 0, w, h);
+                path.rewind();
+                path.addRoundRect(rect, radii, Path.Direction.CW);
+            } else {
+                path.set(Material3ExpressiveShapes.pathFor(shape));
+                shapeMatrix.setScale(w, h);
+                path.transform(shapeMatrix);
+            }
             canvas.drawPath(path, bgPaint);
         }
 

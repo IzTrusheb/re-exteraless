@@ -13,6 +13,7 @@
     <string name="OEPlayerSeek">التقديم</string>
     <string name="OEPlayerOpen">فتح المشغل</string>
     <string name="OEPlayerClassic">المشغل الكلاسيكي</string>
+    <string name="OEPlayerShapeClassic">كلاسيكي</string>
     <string name="OEPlayerNoLyricsTitle">لا توجد كلمات في الملف</string>
     <string name="OEPlayerNoLyricsText">يمكنك البحث عن الكلمات في LRCLIB وlrcmux. سيُرسل اسم المقطع عبر الإنترنت.</string>
     <string name="OEPlayerFindLyrics">البحث عبر الإنترنت</string>

@@ -13,6 +13,7 @@
     <string name="OEPlayerSeek">Posición</string>
     <string name="OEPlayerOpen">Abrir reproductor</string>
     <string name="OEPlayerClassic">Reproductor clásico</string>
+    <string name="OEPlayerShapeClassic">Clásico</string>
     <string name="OEPlayerNoLyricsTitle">El archivo no tiene letra</string>
     <string name="OEPlayerNoLyricsText">Puedes buscar la letra en LRCLIB y lrcmux. El nombre de la canción se enviará a internet.</string>
     <string name="OEPlayerFindLyrics">Buscar en línea</string>
